@@ -1,0 +1,46 @@
+name: Package Flet App
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8' # Specify your Python version
+
+      - name: Install dependencies
+        run: |
+                    pip install -r requirements.txt
+
+      - name: Package for Desktop
+        run: |
+          # Example packaging command for desktop
+          flet package --target desktop          
+
+      - name: Package for Web
+        run: |
+          # Example packaging command for web
+          flet package --target web          
+
+      - name: Package for Mobile
+        run: |
+          # Example packaging command for mobile
+          flet package --target mobile          
+
+      - name: Upload Packages
+        uses: actions/upload-artifact@v2
+        with:
+          name: flet-packages
+          path: |
+                        dist/*
