@@ -17,30 +17,35 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8' # Specify your Python version
+          python-version: '3.12' # Specify your Python version
 
       - name: Install dependencies
         run: |
                     pip install -r requirements.txt
 
-      - name: Package for Desktop
+      - name: Package for Desktop Linux
         run: |
           # Example packaging command for desktop
-          flet package --target desktop          
+          flet build linux          
 
+      - name: Package for Desktop Windows
+        run: |
+          # Example packaging command for desktop
+          flet build windows  
+      
       - name: Package for Web
         run: |
           # Example packaging command for web
-          flet package --target web          
+          flet build web          
 
-      - name: Package for Mobile
+      - name: Package for Mobile (Android)
         run: |
           # Example packaging command for mobile
-          flet package --target mobile          
+          flet build apk          
 
       - name: Upload Packages
         uses: actions/upload-artifact@v2
         with:
-          name: flet-packages
+          name: flet-demo-packages
           path: |
                         dist/*
