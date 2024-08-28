@@ -46,8 +46,8 @@ logger.name = "flet_demo_LOGGER"
 
 
 # Versioning
-flet_demo_MAJOR_VERSION = 1          # 
-flet_demo_MINOR_VERSION = 0          # 
+flet_demo_MAJOR_VERSION = 1          # Initial, mock-up version.
+flet_demo_MINOR_VERSION = 1          # Added GUI-controls.
 flet_demo_SUBMINOR_VERSION = 0       #   
 flet_demo_VERSION_STRING = f"{flet_demo_MAJOR_VERSION}.{flet_demo_MINOR_VERSION}.{flet_demo_SUBMINOR_VERSION}"
 
@@ -72,7 +72,7 @@ def main(page: Page):
     #
     global gstate_holder
     #
-    logger.info(f"WICC charger-GUI ver.{flet_demo_VERSION_STRING} application started.")
+    logger.info(f"Flet demo-GUI ver.{flet_demo_VERSION_STRING} application started.")
     #
     event_log = list()  # List-of-events in the form of tuples, representing individual event-fields
     log_index = 0
@@ -90,8 +90,8 @@ def main(page: Page):
 
     # Page setup (this is indeed a S.P.A ...):
     page.title = f"Flet demo UI - ver.{flet_demo_VERSION_STRING}"
-    page.window.min_height = 800               
-    page.window.min_width = 800                
+    page.window.min_height = 600               
+    page.window.min_width = 400                
     page.vertical_alignment = "center"
     page.bgcolor = flet.colors.BLACK,
     page.on_disconnect = app_close_tasks 
@@ -105,25 +105,33 @@ def main(page: Page):
     # System Monitoring Controls:
     # ===========================
     # System Sensor Data:]
-    hr_label = Text("Heart Rate: ")
-    hr_output = TextField(label="[bpm]", read_only=True, color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, filled=True, fill_color=flet.colors.BLACK, expand=True)
+    hr_label = Text("Heart Rate: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM)
+    hr_output = TextField(label="[bpm]", read_only=True, color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, text_size=20, expand=True)
     #
-    velocity_label = Text("Velocity: ")
-    velocity_output = TextField(label="[km/h]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True, expand=True)
+    velocity_label = Text("Velocity: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM, )
+    velocity_output = TextField(label="[km/h]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True)
     #
-    distance_label = Text("Distance: ")
-    distance_output = TextField(label="[[meters]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True, expand=True)
+    distance_label = Text("Distance: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM, )
+    distance_output = TextField(label="[meters]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True)
     #
-    row1 = Row(controls=[hr_label, hr_output], alignment="center", expand=True)
-    row2 = Row(controls=[velocity_label, velocity_output], expand=True)
-    row3 = Row(controls=[distance_label, distance_output], expand=True)
+    row1 = Row([hr_label, hr_output], height=200)
+    row2 = Row([velocity_label, velocity_output], height=200)
+    row3 = Row([distance_label, distance_output], height=200)
     #
-    sensor_data_col = Column( [row1, row2, row3], expand=True)
+    sensor_data_col = Column( [row1, row2, row3], width=300, expand=True)
     # 
-    sensors_view = Container(content=sensor_data_col, bgcolor=flet.colors.BLUE_GREY_900, border=flet.border.all(1, flet.colors.BLACK), padding=5, margin=5)
+    #sensors_view = Container(content=sensor_data_col, bgcolor=flet.colors.BLUE_GREY_900, border=flet.border.all(1, flet.colors.RED), padding=5, margin=5)
     
     # Construct page:
-    page.add(sensors_view)
+    #page.add(sensors_view)
+    """
+    page.add(row1)
+    page.add( Divider() )
+    page.add(row2)
+    page.add( Divider() )
+    page.add(row3)
+    """
+    page.add(sensor_data_col)
     page.add( Divider() )
             
     page.appbar = AppBar(
