@@ -120,6 +120,7 @@ def main(page: Page):
             update_timer.join()
         #
         logger.info("WICC GUI application exit ...")
+        page.window.destroy()
     
     
     def app_start_updating(e) -> None:
@@ -187,15 +188,14 @@ def main(page: Page):
             
     page.appbar = AppBar(
         leading_width=100,
+        toolbar_height=100,
         center_title=False,
         bgcolor=flet.colors.SURFACE_VARIANT,
-        #actions=[
-        #    IconButton(flet.icons.FILE_COPY, tooltip="Save Log", on_click=lambda _: log_file_pick.save_file() ),
-        #    IconButton(flet.icons.RESET_TV, tooltip="Reset Connection", on_click=reset_gui),
-        #],
+        actions=[
+            IconButton(flet.icons.CONNECT_WITHOUT_CONTACT, tooltip="Connect", on_click=app_start_updating),
+            IconButton(flet.icons.EXIT_TO_APP, tooltip="Exit", on_click=app_close_tasks),
+        ],
     )
-    # Add some value ...
-    app_start_updating(None)
     #
     page.update()
 
@@ -205,5 +205,6 @@ flet_demo = flet.app(target=main, name="Flet-APP Demo")
 # Resume when GUI closes:
 grun_flag = False
 logger.info("Flet demo-application exit ...")
+exit(0)
 
 
