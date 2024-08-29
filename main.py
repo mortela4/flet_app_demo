@@ -10,6 +10,7 @@ import sys
 import logging
 import random
 import _thread
+from threading import Timer
 
 from flet import (
                     ElevatedButton, IconButton, TextButton, Switch,
@@ -61,9 +62,16 @@ if STAND_ALONE_APP:
 else:
     APP_TYPE = flet.WEB_BROWSER
 
+SENSOR_INTERVAL = 1.0   # In seconds ...
+
 
 gstate_holder = None                                   
 grun_flag = True         
+
+# Variables:
+speed = 5.0
+heartrate = 90.0
+distance = 0.0
 
 
 # =========================== MAIN ===========================
@@ -71,6 +79,58 @@ grun_flag = True
 def main(page: Page):
     #
     global gstate_holder
+    global speed
+    global heartrate
+    global distance
+    #
+    update_timer = None
+
+    # ************************** Helpers *************************
+
+    def set_sensor_values() -> None:
+        global speed
+        global heartrate
+        global distance
+        #
+        nonlocal update_timer 
+        #
+        logger.info(f"New values: v={speed}, hr={heartrate}, d={distance}")
+        speed = random.randrange(30, 50)
+        heartrate = speed * 4
+        distance += (speed * SENSOR_INTERVAL) / 3.6     # 3600 sec/h divided by 1000 m/km
+        #
+        hr_output.value=heartrate
+        velocity_output.value = speed
+        distance_output.value = f"{distance:.03f}"
+        page.update()
+        #
+        update_timer = Timer(SENSOR_INTERVAL, set_sensor_values)
+        update_timer.start()
+
+
+    def app_close_tasks(e) -> None:
+        """ Cleanup on app close or exit (either via "Close"-choice or window-controls) """
+        global grun_flag
+        #
+        nonlocal update_timer
+        #
+        grun_flag = False
+        if update_timer:
+            update_timer.cancel()
+            update_timer.join()
+        #
+        logger.info("WICC GUI application exit ...")
+    
+    
+    def app_start_updating(e) -> None:
+        nonlocal update_timer
+        #
+        if update_timer:
+            update_timer.start()
+            logger.info("Timer started ...")
+
+
+    update_timer = Timer(SENSOR_INTERVAL, set_sensor_values)
     #
     logger.info(f"Flet demo-GUI ver.{flet_demo_VERSION_STRING} application started.")
     #
@@ -78,15 +138,6 @@ def main(page: Page):
     log_index = 0
     outlets_enabled = False
 
-
-    def app_close_tasks(e) -> None:
-        """ Cleanup on app close or exit (either via "Close"-choice or window-controls) """
-        global grun_flag
-        #
-        grun_flag = False
-        logger.info("WICC GUI application exit ...")
-    
-    
 
     # Page setup (this is indeed a S.P.A ...):
     page.title = f"Flet demo UI - ver.{flet_demo_VERSION_STRING}"
@@ -106,13 +157,13 @@ def main(page: Page):
     # ===========================
     # System Sensor Data:]
     hr_label = Text("Heart Rate: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM)
-    hr_output = TextField(label="[bpm]", read_only=True, color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, text_size=20, expand=True)
+    hr_output = TextField(label="[bpm]", read_only=True, color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, text_size=20, expand=True, value=heartrate)
     #
     velocity_label = Text("Velocity: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM, )
-    velocity_output = TextField(label="[km/h]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True)
+    velocity_output = TextField(label="[km/h]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True, value=speed)
     #
     distance_label = Text("Distance: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM, )
-    distance_output = TextField(label="[meters]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True)
+    distance_output = TextField(label="[meters]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True, value=distance)
     #
     row1 = Row([hr_label, hr_output], height=200)
     row2 = Row([velocity_label, velocity_output], height=200)
@@ -144,15 +195,13 @@ def main(page: Page):
         #],
     )
     # Add some value ...
-    hr_output.value = "135.7"
-    velocity_output.value = "50.58"
-    distance_output.value = "1324.6"
+    app_start_updating(None)
     #
     page.update()
 
 
 # ================== Run GUI ==========================
-flet_demo = flet.app(target=main, view=APP_TYPE, name="Flet Demo")
+flet_demo = flet.app(target=main, name="Flet-APP Demo")
 # Resume when GUI closes:
 grun_flag = False
 logger.info("Flet demo-application exit ...")
