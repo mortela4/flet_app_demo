@@ -12,6 +12,8 @@ import random
 import _thread
 from threading import Timer
 
+from plyer import bluetooth as bt_ble
+
 from flet import (
                     ElevatedButton, IconButton, TextButton, Switch,
                     Dropdown, 
@@ -48,12 +50,14 @@ logger.name = "flet_demo_LOGGER"
 
 # Versioning
 flet_demo_MAJOR_VERSION = 1          # Initial, mock-up version.
-flet_demo_MINOR_VERSION = 2          # Added timer and sensor-data generator function for mockup.
+flet_demo_MINOR_VERSION = 3          # Added 'ply' module for generic HW-access across platforms, including Android.
 flet_demo_SUBMINOR_VERSION = 0       #   
 flet_demo_VERSION_STRING = f"{flet_demo_MAJOR_VERSION}.{flet_demo_MINOR_VERSION}.{flet_demo_SUBMINOR_VERSION}"
 
 
 # Flags:
+LL_DEBUG = False
+
 STAND_ALONE_APP = True  # false = webapp, true = native GUI
 USE_WS_TRACE = True
 # 
@@ -85,6 +89,7 @@ def main(page: Page):
     #
     update_timer = None
 
+    
     # ************************** Helpers *************************
 
     def set_sensor_values() -> None:
@@ -94,12 +99,13 @@ def main(page: Page):
         #
         nonlocal update_timer 
         #
-        logger.info(f"New values: v={speed}, hr={heartrate}, d={distance}")
         speed = random.randrange(30, 50)
         heartrate = speed * 4
         distance += (speed * SENSOR_INTERVAL) / 3.6     # 3600 sec/h divided by 1000 m/km
+        if LL_DEBUG:
+            logger.info(f"New values: v={speed}, hr={heartrate}, d={distance}")
         #
-        hr_output.value=heartrate
+        hr_output.value = heartrate
         velocity_output.value = speed
         distance_output.value = f"{distance:.03f}"
         page.update()
