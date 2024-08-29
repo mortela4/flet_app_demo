@@ -48,7 +48,7 @@ logger.name = "flet_demo_LOGGER"
 
 # Versioning
 flet_demo_MAJOR_VERSION = 1          # Initial, mock-up version.
-flet_demo_MINOR_VERSION = 1          # Added GUI-controls.
+flet_demo_MINOR_VERSION = 2          # Added timer and sensor-data generator function for mockup.
 flet_demo_SUBMINOR_VERSION = 0       #   
 flet_demo_VERSION_STRING = f"{flet_demo_MAJOR_VERSION}.{flet_demo_MINOR_VERSION}.{flet_demo_SUBMINOR_VERSION}"
 
@@ -157,14 +157,14 @@ def main(page: Page):
     # System Monitoring Controls:
     # ===========================
     # System Sensor Data:]
-    hr_label = Text("Heart Rate: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM)
-    hr_output = TextField(label="[bpm]", read_only=True, color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, text_size=20, expand=True, value=heartrate)
+    hr_label = Text("Heart Rate [bpm]: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM)
+    hr_output = TextField(read_only=True, color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, text_size=20, expand=True, value=heartrate)
     #
-    velocity_label = Text("Velocity: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM, )
-    velocity_output = TextField(label="[km/h]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True, value=speed)
+    velocity_label = Text("Velocity [km/h]: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM, )
+    velocity_output = TextField(color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True, value=speed)
     #
-    distance_label = Text("Distance: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM, )
-    distance_output = TextField(label="[meters]", color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True, value=distance)
+    distance_label = Text("Distance [m]: ", expand=True, style=flet.TextThemeStyle.HEADLINE_MEDIUM, )
+    distance_output = TextField(color=flet.colors.WHITE, bgcolor=flet.colors.BLACK, read_only=True,  text_size=20, expand=True, value=distance)
     #
     row1 = Row([hr_label, hr_output], height=200)
     row2 = Row([velocity_label, velocity_output], height=200)
