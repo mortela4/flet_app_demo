@@ -61,10 +61,6 @@ LL_DEBUG = False
 STAND_ALONE_APP = True  # false = webapp, true = native GUI
 USE_WS_TRACE = True
 # 
-if STAND_ALONE_APP:
-    APP_TYPE = flet.FLET_APP
-else:
-    APP_TYPE = flet.WEB_BROWSER
 
 SENSOR_INTERVAL = 1.0   # In seconds ...
 
